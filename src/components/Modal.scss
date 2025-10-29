@@ -1,0 +1,349 @@
+@use '../styles/variables' as *;
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(12px) saturate(180%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 1000;
+  animation: overlayFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+
+  @media (max-width: $breakpoint-mobile) {
+    padding: 0.75rem;
+  }
+
+  @media (max-width: $breakpoint-xs) {
+    padding: 0.5rem;
+    align-items: flex-start;
+    padding-top: 1rem;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+    animation: pulseBackground 3s ease-in-out infinite;
+  }
+}
+
+@keyframes overlayFadeIn {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px) saturate(100%);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(12px) saturate(180%);
+  }
+}
+
+@keyframes pulseBackground {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.1);
+  }
+}
+
+.modal {
+  background: $surface;
+  border-radius: $radius-xl;
+  max-width: 800px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(59, 130, 246, 0.2),
+    0 0 100px rgba(59, 130, 246, 0.2);
+  animation: modalEntrance 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-style: preserve-3d;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+
+    @media (max-width: $breakpoint-xs) {
+      width: 6px;
+    }
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $primary-color;
+    border-radius: 4px;
+    transition: background 0.3s;
+
+    &:hover {
+      background: $primary-hover;
+    }
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    max-width: 100%;
+    max-height: 95vh;
+  }
+
+  @media (max-width: $breakpoint-xs) {
+    border-radius: $radius-lg;
+    max-height: calc(100vh - 2rem);
+  }
+
+  &__close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+    border: 2px solid rgba(59, 130, 246, 0.2);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    animation: closeButtonEntrance 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s backwards;
+
+    @media (max-width: $breakpoint-xs) {
+      width: 36px;
+      height: 36px;
+      top: 0.75rem;
+      right: 0.75rem;
+
+      svg {
+        width: 18px;
+        height: 18px;
+      }
+    }
+
+    &:hover {
+      background: linear-gradient(135deg, $primary-color 0%, #6366f1 100%);
+      border-color: transparent;
+      transform: rotate(90deg) scale(1.1);
+      box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+
+      @media (max-width: $breakpoint-xs) {
+        transform: rotate(90deg) scale(1.05);
+      }
+
+      svg {
+        color: white;
+      }
+    }
+
+    &:active {
+      transform: rotate(90deg) scale(0.95);
+    }
+
+    &:focus-visible {
+      outline: 2px solid $primary-color;
+      outline-offset: 2px;
+    }
+
+    svg {
+      color: $text-primary;
+      transition: color 0.3s ease;
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__image {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    border-radius: $radius-xl $radius-xl 0 0;
+    animation: imageReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s backwards;
+    position: relative;
+
+    @media (max-width: $breakpoint-xs) {
+      border-radius: $radius-lg $radius-lg 0 0;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.3) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    @media (max-width: $breakpoint-tablet) {
+      height: 300px;
+    }
+
+    @media (max-width: $breakpoint-mobile) {
+      height: 250px;
+    }
+
+    @media (max-width: $breakpoint-xs) {
+      height: 200px;
+    }
+  }
+
+  &__info {
+    padding: 2rem;
+
+    @media (max-width: $breakpoint-mobile) {
+      padding: 1.5rem;
+    }
+
+    @media (max-width: $breakpoint-xs) {
+      padding: 1.25rem;
+    }
+  }
+
+  &__title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: $text-primary;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+    animation: slideInLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.3s backwards;
+    background: linear-gradient(135deg, $text-primary 0%, $primary-color 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+
+    @media (max-width: $breakpoint-mobile) {
+      font-size: 1.5rem;
+    }
+
+    @media (max-width: $breakpoint-xs) {
+      font-size: 1.375rem;
+      margin-bottom: 0.875rem;
+    }
+  }
+
+  &__rating {
+    display: flex;
+    gap: 0.25rem;
+    margin-bottom: 1.5rem;
+    color: $star-color;
+    animation: slideInLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.4s backwards;
+
+    @media (max-width: $breakpoint-xs) {
+      margin-bottom: 1.25rem;
+    }
+
+    svg {
+      animation: starPopIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) backwards;
+      filter: drop-shadow(0 2px 4px rgba(251, 191, 36, 0.4));
+
+      @media (max-width: $breakpoint-xs) {
+        width: 20px;
+        height: 20px;
+      }
+
+      @for $i from 1 through 5 {
+        &:nth-child(#{$i}) {
+          animation-delay: calc(0.5s + #{$i * 0.05s});
+        }
+      }
+    }
+  }
+
+  &__description {
+    color: $text-secondary;
+    font-size: 1.0625rem;
+    line-height: 1.8;
+    animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.5s backwards;
+
+    @media (max-width: $breakpoint-mobile) {
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    @media (max-width: $breakpoint-xs) {
+      font-size: 0.9375rem;
+      line-height: 1.6;
+    }
+  }
+}
+
+@keyframes modalEntrance {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(50px) rotateX(10deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0) rotateX(0deg);
+  }
+}
+
+@keyframes closeButtonEntrance {
+  from {
+    opacity: 0;
+    transform: scale(0) rotate(-180deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes imageReveal {
+  from {
+    opacity: 0;
+    transform: scale(1.1);
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes starPopIn {
+  from {
+    opacity: 0;
+    transform: scale(0) rotate(-180deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
