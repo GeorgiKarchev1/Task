@@ -8,7 +8,7 @@ import './App.scss';
 function App() {
   const { trips, loading, error } = useFetchTrips();
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortByRating, setSortByRating] = useState(false);
+  const [sortDirection, setSortDirection] = useState(null); // null, 'desc', or 'asc'
   const [selectedTrip, setSelectedTrip] = useState(null);
 
   const filteredAndSortedTrips = useMemo(() => {
@@ -16,12 +16,26 @@ function App() {
       trip.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    if (sortByRating) {
+    if (sortDirection === 'desc') {
+      // Sort by rating: highest to lowest (5 -> 4 -> 3)
       result = [...result].sort((a, b) => b.rating - a.rating);
+    } else if (sortDirection === 'asc') {
+      // Sort by rating: lowest to highest (3 -> 4 -> 5)
+      result = [...result].sort((a, b) => a.rating - b.rating);
     }
 
     return result;
-  }, [trips, searchQuery, sortByRating]);
+  }, [trips, searchQuery, sortDirection]);
+
+  const handleSortToggle = () => {
+    if (sortDirection === null) {
+      setSortDirection('desc'); // First click: sort highest to lowest
+    } else if (sortDirection === 'desc') {
+      setSortDirection('asc'); // Second click: sort lowest to highest
+    } else {
+      setSortDirection(null); // Third click: back to original order
+    }
+  };
 
   if (loading) {
     return (
@@ -56,8 +70,8 @@ function App() {
       <SearchBar
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
-        sortByRating={sortByRating}
-        onSortToggle={() => setSortByRating(!sortByRating)}
+        sortDirection={sortDirection}
+        onSortToggle={handleSortToggle}
       />
 
       {filteredAndSortedTrips.length === 0 ? (
